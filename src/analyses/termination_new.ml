@@ -11,13 +11,11 @@ let loop_counters : varinfo list ref = ref []
 (** Contains the locations of the upjumping gotos *)
 let upjumping_gotos : location list ref = ref []
 
-let loop_exit : varinfo ref = ref (makeVarinfo false "-error" Cil.intType)
-
 let is_loop_counter_var (x : varinfo) =
   List.mem x !loop_counters
 
-let is_loop_exit_indicator (x : varinfo) =
-  x = !loop_exit
+let is_loop_exit_indicator (f : varinfo) =
+  f.vname = "__goblint_bounded"
 
 (** Checks whether at the current location (=loc) of the analysis an
  * upjumping goto was already reached. Returns true if no upjumping goto was
@@ -60,24 +58,25 @@ struct
   let startstate _ = D.bot ()
   let exitstate = startstate (* TODO *)
 
-  let finalize () = () (* TODO *)
-
   let assign ctx (lval : lval) (rval : exp) =
     (* Detect assignment to loop counter variable *)
     match lval, rval with
       (Var x, NoOffset), _ when is_loop_counter_var x ->
       (* Assume that the following loop does not terminate *)
       D.add x false ctx.local
-    | (Var y, NoOffset), Lval (Var x, NoOffset) when is_loop_exit_indicator y ->
-      (* Loop exit: Check whether loop counter variable is bounded *)
-      (* TODO: Move *)
-      let is_bounded = check_bounded ctx x in
-      D.add x is_bounded ctx.local
     | _ -> ctx.local
 
-  let special ctx (lval : lval option) (f : varinfo) (arglist : exp list) =
-    (* TODO: Implement check for our special loop exit indicator function *)
-    ctx.local
+  (** Detect the special function call which marks the position in which to
+   * check for the loop counter variable being bounded. *)
+  let special ctx (_ : lval option) (f : varinfo) (arglist : exp list) =
+    if is_loop_exit_indicator f then
+      match arglist with
+        [Lval (Var x, NoOffset)] -> (* the loop counter variable *)
+        let is_bounded = check_bounded ctx x in
+        D.add x is_bounded ctx.local
+      | _ -> ctx.local
+    else
+      ctx.local
 
   (** Provides information to Goblint *)
   (* TODO: Consider gotos and recursion *)
