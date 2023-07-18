@@ -2,13 +2,9 @@
 int main()
 {
   int i = 0;
-  end: // Set at wrong place
-
-  if (i) {
+    end: // Set at wrong place
     goto end;
-  } else {
-    return 1;
-  }
+    i = 1;
 
   return 0;
 }
