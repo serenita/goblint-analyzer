@@ -6,7 +6,7 @@ void recursiveFunction(int i) {
         return;
     }
 
-    recursiveFunction(i--); // Post-increment leads to i as argument
+    recursiveFunction(i--); // Post-decrement leads to i as argument
 }
 
 int main()
