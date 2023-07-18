@@ -5,23 +5,23 @@
 // Function to calculate the factorial of a number recursively
 unsigned long long factorial(unsigned int n) { // NONTERMFUNDEC
     if (n == 0) {
-        return factorial(1);
+        return factorial(1); // 1
     } else {
         return n * factorial(n - 1);
     }
 }
 
 // Function to calculate the Fibonacci number using a do-while loop
-unsigned long long fibonacci(unsigned int n) {
-    unsigned long long curr = 1;
-    unsigned long long fib = 0;
+unsigned long long triangle(unsigned int n) {
+    unsigned long long curr = 0;
+    unsigned long long triangle = 0;
 
     do {
-        fib = fib + curr;
         curr++;
-    } while (curr > 0); // NONTERMLOOP
-
-    return fib;
+        triangle = triangle + curr;
+    } while (curr <= triangle); // NONTERMLOOP
+    // < n
+    return triangle;
 }
 
 // Function to return the smallest even half of a number using goto statements
@@ -34,6 +34,7 @@ unsigned int getSmallestEvenHalf(unsigned int n) {
     while (1) {
         if ((n / 2) % 2 != 0) {
             goto start; // NONTERMGOTO
+            // end
         }
         n = n / 2;
     }
@@ -42,22 +43,22 @@ unsigned int getSmallestEvenHalf(unsigned int n) {
 }
 
 void factorialPrint(unsigned int n) {
-    printf("Factorial of %iu: %llu", n, factorial(n));
+    printf("Factorial of %i: %llu\n", n, factorial(n));
 }
 
-void fibonacciPrint(unsigned int n) {
-    printf("Fibonacci of %iu: %llu", n, fibonacci(n));
+void trianglePrint(unsigned int n) {
+    printf("Triangle number of %i: %llu\n", n, triangle(n));
 }
 
 void smallestEvenHalfPrint(unsigned int n) {
-    printf("%iu", getSmallestEvenHalf(n));
+    printf("Smallest even half of %i: %i", n, getSmallestEvenHalf(n));
 }
 
 int main() {
     unsigned int number = 32;
 
     factorialPrint(number);
-    fibonacciPrint(number);
+    trianglePrint(number);
     smallestEvenHalfPrint(number);
 
     return 0;
