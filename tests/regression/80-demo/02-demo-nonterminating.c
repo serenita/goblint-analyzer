@@ -19,7 +19,7 @@ unsigned long long fibonacci(unsigned int n) {
     do {
         fib = fib + curr;
         curr++;
-    } while (curr > 0); // Registered race; therefore no check for LOOP
+    } while (curr > 0); // NONTERMLOOP
 
     return fib;
 }
@@ -41,32 +41,24 @@ unsigned int getSmallestEvenHalf(unsigned int n) {
     return n;
 }
 
-void factorialPrint(void *arg) {
-    unsigned int n = *(unsigned int *) arg;
+void factorialPrint(unsigned int n) {
     printf("Factorial of %iu: %llu", n, factorial(n));
 }
 
-void fibonacciPrint(void *arg) {
-    unsigned int n = *(unsigned int *) arg;
+void fibonacciPrint(unsigned int n) {
     printf("Fibonacci of %iu: %llu", n, fibonacci(n));
 }
 
-void smalestEvenHalfPrint(void *arg) {
-    unsigned int n = *(unsigned int *) arg;
+void smallestEvenHalfPrint(unsigned int n) {
     printf("%iu", getSmallestEvenHalf(n));
 }
 
 int main() {
     unsigned int number = 32;
-    pthread_t thread1, thread2, thread3;
 
-    pthread_create(&thread1, NULL, (void *(*)(void *)) factorialPrint, &number);
-    pthread_create(&thread2, NULL, (void *(*)(void *)) fibonacciPrint, &number);
-    pthread_create(&thread3, NULL, (void *(*)(void *)) smalestEvenHalfPrint, &number);
-
-    pthread_join(thread1, NULL);
-    pthread_join(thread2, NULL);
-    pthread_join(thread3, NULL);
+    factorialPrint(number);
+    fibonacciPrint(number);
+    smallestEvenHalfPrint(number);
 
     return 0;
 }
